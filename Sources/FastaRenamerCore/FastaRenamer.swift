@@ -61,7 +61,7 @@ public enum FastaRenamer {
     
     /// Removes problematic characters for phylogeny software
     static func cleanTaxon(raw: String) -> String? {
-        let unwanted: Set<Character> = ["(", ",", "[", "]", ":", ";", ",", "'", "\"", "/", "\\", "|"]
+        let unwanted: Set<Character> = ["(", ")", "[", "]", ":", ";", ",", "'", "\"", "/", "\\", "|"]
         var components = [String]()
         for word in raw.split(whereSeparator: { $0 == " " || $0 == "\t" }) {
             let cleanName = String(word.filter { !unwanted.contains($0) })
