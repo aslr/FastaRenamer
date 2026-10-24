@@ -10,8 +10,12 @@ public struct FastaResult {
 }
 
 /// Rewrites all FASTA sequence names to the format taxon_name_accession
+/// Parameters:
+///  input: string to be renamed
+///  removeVersion: pass true if you want to remove the version from the accession number
 public enum FastaRenamer {
-    public static func rename(_ input: String) -> FastaResult {
+    public static func rename(_ input: String,
+                              removeVersion: Bool = false) -> FastaResult {
         var results = [String]()
         var count = 0
         var warnings = [String]()
@@ -29,7 +33,7 @@ public enum FastaRenamer {
             let hasCR = line.hasSuffix("\r")
             let cleanLine = hasCR ? line.dropLast() : line
             
-            if let newName = renameHeader(cleanLine) {
+            if let newName = renameHeader(cleanLine, removeVersion: removeVersion) {
                 results.append(">" + newName + (hasCR ? "\r" : ""))
                 count += 1
             } else {
@@ -43,7 +47,8 @@ public enum FastaRenamer {
         return result
     }
     
-    static func renameHeader(_ header: Substring) -> String? {
+    static func renameHeader(_ header: Substring,
+                             removeVersion: Bool) -> String? {
         var body = String(header.dropFirst()) // drop ">"
         
         guard let close = body.lastIndex(of: "]") else { return nil }
@@ -54,8 +59,13 @@ public enum FastaRenamer {
         guard let cleanTaxon = cleanTaxon(raw: taxon) else { return nil }
         
         let tokens = body.split(whereSeparator: {" \t|,;".contains($0)} )
-        guard let accession = tokens.first(where: { $0.isAccession() } )
+        guard var accession = tokens.first(where: { $0.isAccession() } )
                 else { return nil }
+        
+        if removeVersion, let dot = accession.firstIndex(of: ".") {
+            accession = accession[..<dot]
+        }
+        
         return cleanTaxon + "_" + accession
     }
     
