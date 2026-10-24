@@ -7,21 +7,31 @@ let package = Package(
     name: "FastaRenamer",
     platforms: [.macOS(.v13)],
     dependencies: [
-        .package(url: "https://github.com/swiftwasm/JavaScriptKit", from: "0.19.2")
+        .package(url: "https://github.com/swiftwasm/JavaScriptKit", from: "0.60.0")
     ],
     targets: [
-        .target(name: "FastaRenamerCore"),
+        .target(
+            name: "FastaRenamerCore",
+            swiftSettings: [
+                .enableUpcomingFeature("ApproachableConcurrency"),
+            ]
+        ),
         .executableTarget(
             name: "FastaRenamer",
             dependencies: [
-                "FastaRenamerCore",
-                .product(name: "JavaScriptKit", package: "JavaScriptKit")
+                "JavaScriptKit",
+                "FastaRenamerCore"
+            ],
+            swiftSettings: [
+                .enableUpcomingFeature("ApproachableConcurrency"),
             ]
         ),
         .testTarget(
             name: "FastaRenamerCoreTests",
-            dependencies: ["FastaRenamerCore"]
+            dependencies: ["FastaRenamerCore"],
+            swiftSettings: [
+                .enableUpcomingFeature("ApproachableConcurrency"),
+            ]
         ),
-    ],
-    swiftLanguageModes: [.v5]
+    ]
 )

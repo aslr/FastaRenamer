@@ -1,4 +1,4 @@
-/// FastaRenamer
+/// FastaRenamerCore
 ///
 /// @aslr 2026
 ///
@@ -13,7 +13,7 @@ public struct FastaResult {
 /// Parameters:
 ///  input: string to be renamed
 ///  removeVersion: pass true if you want to remove the version from the accession number
-public enum FastaRenamer {
+public struct FastaRenamerCore {
     public static func rename(_ input: String,
                               removeVersion: Bool = false) -> FastaResult {
         var results = [String]()
