@@ -16,10 +16,12 @@ struct FastaRenamer {
         let outputArea = document.getElementById("outputArea")
         let statusArea = document.getElementById("statusArea")
         let formatButton = document.getElementById("formatBtn")
+        let removeVersionBox = document.getElementById("removeVersion")
         
         let handler = JSClosure { _ in
             let text = inputArea.value.string ?? ""
-            let result = FastaRenamerCore.rename(text)
+            let removeVersion = removeVersionBox.checked.boolean ?? false
+            let result = FastaRenamerCore.rename(text, removeVersion: removeVersion)
             outputArea.value = .string(result.name)
             
             let headers = result.count == 1 ? "header" : "headers"
