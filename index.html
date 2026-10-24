@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>FASTA Renamer</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>FASTA header transformer</h1>
+    <p>Use this tool to transform FASTA headers into the format <code><em>taxon_name_ACCESSION</em></code>, which is the preferred way to display taxa names in phylogenetic trees.<br>
+        To omit the version of the accession number choose the right option below.
+    </p>
+    
+    <div id="form-container" class="form-container">
+        <label for="inputArea" class="field-label">Input Area:</label>
+        <textarea id="inputArea" placeholder="Paste sequences in FASTA format here..."></textarea>
+        
+        <div class="form-actions">
+            <label class="checkbox-label">
+                <input type="checkbox" id="removeVersion">Remove the accession version (NP_12345.1 -> NP_12345) 
+            </label>
+            <button id="formatBtn">Rename Sequences</button>
+        </div>
+        
+        <label for="outputArea" class="field-label">Output Area:</label>
+        <textarea id="outputArea" readonly placeholder="Transformed output will appear here..."></textarea>
+        
+        <div class="status-wrapper">
+            <label for="statusArea" class="field-label">Warnings:</label>
+            <pre id="statusArea">System ready...</pre>
+        </div>
+    </div>
+
+    <script type="module">
+        import { init } from "./.build/plugins/PackageToJS/outputs/Package/index.js";
+        init();
+    </script>
+</body>
+</html>
