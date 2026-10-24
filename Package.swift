@@ -5,21 +5,22 @@ import PackageDescription
 
 let package = Package(
     name: "FastaRenamer",
+    dependencies: [
+        .package(url: "https://github.com/swiftwasm/JavaScriptKit", from: "0.19.2")
+    ],
     targets: [
-        // Targets are the basic building blocks of a package, defining a module or a test suite.
-        // Targets can depend on other targets in this package and products from dependencies.
+        .target(name: "FastaRenamerCore"),
         .executableTarget(
             name: "FastaRenamer",
-            swiftSettings: [
-                .enableUpcomingFeature("ApproachableConcurrency"),
-            ],
+            dependencies: [
+                "FastaRenamerCore",
+                .product(name: "JavaScriptKit", package: "JavaScriptKit")
+            ]
         ),
         .testTarget(
-            name: "FastaRenamerTests",
-            dependencies: ["FastaRenamer"],
-            swiftSettings: [
-                .enableUpcomingFeature("ApproachableConcurrency"),
-            ],
+            name: "FastaRenamerCoreTests",
+            dependencies: ["FastaRenamerCore"]
         ),
-    ]
+    ],
+    swiftLanguageModes: [.v5]
 )
