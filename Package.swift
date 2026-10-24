@@ -5,6 +5,7 @@ import PackageDescription
 
 let package = Package(
     name: "FastaRenamer",
+    platforms: [.macOS(.v13)],
     dependencies: [
         .package(url: "https://github.com/swiftwasm/JavaScriptKit", from: "0.19.2")
     ],

@@ -1,9 +1,7 @@
-//
-//  Strings.swift
-//  FastaRenamer
-//
-//  Created by aslr on 24/10/2026.
-//
+/// Strings
+///
+/// @aslr 2026
+///
 
 extension Substring {
     /// Checks for the known format of an NCBI accession number:
