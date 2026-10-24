@@ -47,7 +47,7 @@ public enum FastaRenamer {
         var body = String(header.dropFirst()) // drop ">"
         
         guard let close = body.lastIndex(of: "]") else { return nil }
-        guard let open = body.lastIndex(of: "[") else { return nil }
+        guard let open = body[..<close].lastIndex(of: "[") else { return nil }
         let taxon = String(body[body.index(after: open)..<close])
         body.removeSubrange(open...close)
         
