@@ -30,10 +30,24 @@
             <pre id="statusArea">System ready...</pre>
         </div>
     </div>
-
+    <div>
+        <p>University of Algarve - Bioinformatics - 2026</p>
+    </div>
+   <!-- Load the Swift WASM bridge -->
+    <script type="importmap">
+    {
+        "imports": {
+            "@bjorn3/browser_wasi_shim": "https://cdn.jsdelivr.net/npm/@bjorn3/browser_wasi_shim@0.3.0/+esm"
+        }
+    }
+    </script>
     <script type="module">
-        import { init } from "./.build/plugins/PackageToJS/outputs/Package/index.js";
-        init();
+        try {
+            const { init } = await import("./index.js");
+            await init();
+        } catch (e) {
+            console.error("Swift init failed:", e);
+        }
     </script>
 </body>
 </html>
