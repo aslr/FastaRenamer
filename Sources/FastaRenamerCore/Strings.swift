@@ -53,4 +53,16 @@ extension Substring {
         }
         return i == characters.count
     }
+    
+    /// "Escherichia", "Bacillus": capital letter followed by letters
+    func looksLikeGenus() -> Bool {
+        guard let first, first.isUppercase else { return false }
+        return dropFirst().allSatisfy { $0.isLetter || $0 == "-" }
+    }
+
+    /// "coli", "sapiens", "sp.": starts lowercase, letters/hyphen/dot only
+    func looksLikeSpeciesEpithet() -> Bool {
+        guard let first, first.isLowercase else { return false }
+        return allSatisfy { $0.isLetter || $0 == "-" || $0 == "." }
+    }
 }

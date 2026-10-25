@@ -50,23 +50,57 @@ public struct FastaRenamerCore {
     static func renameHeader(_ header: Substring,
                              removeVersion: Bool) -> String? {
         var body = String(header.dropFirst()) // drop ">"
+        var taxon: String?
         
-        guard let close = body.lastIndex(of: "]") else { return nil }
-        guard let open = body[..<close].lastIndex(of: "[") else { return nil }
-        let taxon = String(body[body.index(after: open)..<close])
-        body.removeSubrange(open...close)
-        
-        guard let cleanTaxon = cleanTaxon(raw: taxon) else { return nil }
+        // Case 1: taxon between [] (BLASTp hit page format)
+        if let close = body.lastIndex(of: "]"),
+           let open = body[..<close].lastIndex(of: "[") {
+            guard let cleanedTaxon = cleanTaxon(raw: String(body[body.index(after: open)..<close]))
+            else { return nil }
+            taxon = cleanedTaxon
+            body.removeSubrange(open...close)
+        }
         
         let tokens = body.split(whereSeparator: {" \t|,;".contains($0)} )
-        guard var accession = tokens.first(where: { $0.isAccession() } )
-                else { return nil }
+        guard let accessionIndex = tokens.firstIndex(where: { $0.isAccession() } )
+            else { return nil }
+        var accession = tokens[accessionIndex]
+        
+        // Case 2: no [] taxon (BLASTn format):
+        // ">ACCESSION.VERSION Genus species strain ... description"
+        if taxon == nil {
+            taxon = taxonAfterAccession(tokens[(accessionIndex + 1)...])
+        }
+        guard let taxon else { return nil }
         
         if removeVersion, let dot = accession.firstIndex(of: ".") {
             accession = accession[..<dot]
         }
         
-        return cleanTaxon + "_" + accession
+        return taxon + "_" + accession
+    }
+    
+    /// Takes "Genus species" (or "Candidatus Genus species") from the words
+    /// that follow the accession. Returns nil if they do not look like a binomial name.
+    static func taxonAfterAccession(_ words: ArraySlice<Substring>) -> String? {
+        var rest = words
+        var parts = [Substring]()
+        
+        // Keep the Candidatus prefix as part of the taxon name
+        if let first = rest.first, first == "Candidatus" {
+            parts.append(first)
+            rest = rest.dropFirst()
+        }
+        
+        guard let genus = rest.first,
+              let species = rest.dropFirst().first,
+              genus.looksLikeGenus(),
+              species.looksLikeSpeciesEpithet()
+        else { return nil }
+        
+        parts.append(genus)
+        parts.append(species)
+        return cleanTaxon(raw: parts.joined(separator: " "))
     }
     
     /// Removes problematic characters for phylogeny software

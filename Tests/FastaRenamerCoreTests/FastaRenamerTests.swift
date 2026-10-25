@@ -42,4 +42,20 @@ final class FastaRenamerTests: XCTestCase {
         XCTAssertEqual(r.name, ">something odd\nACGT")
         XCTAssertEqual(r.warnings.count, 1)
     }
+    
+    func testBlastSelectedSequencesFormat() {
+        let r = FastaRenamerCore.rename(">NR_074334.1 Escherichia coli strain K-12 16S ribosomal RNA\nACGT")
+        XCTAssertEqual(r.name, ">Escherichia_coli_NR_074334.1\nACGT")
+    }
+
+    func testBlastFormatRemoveVersion() {
+        let r = FastaRenamerCore.rename(">MK123456.1 Bacillus subtilis subsp. subtilis str. 168 cytochrome b gene, partial cds\nACGT",
+                                        removeVersion: true)
+        XCTAssertEqual(r.name, ">Bacillus_subtilis_MK123456\nACGT")
+    }
+
+    func testNoTaxonWarns() {
+        let r = FastaRenamerCore.rename(">MK123456.1 uncultured bacterium clone X1\nACGT")
+        XCTAssertEqual(r.warnings.count, 1)
+    }
 }

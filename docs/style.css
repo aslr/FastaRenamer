@@ -31,7 +31,6 @@ textarea::placeholder {
 
 textarea[readonly] {
     background-color: #697f95;
-    color: #f3f6f7;
 }
 
 #outputArea::placeholder {
@@ -101,11 +100,6 @@ button:active {
     word-break: break-word;
     max-height: 150px;
     overflow-y: auto;          /* Scrollbar if warnings exceed max-height */
-}
-
-.form-container textarea[readonly] {
-    background-color: #697f95;
-    color: #f3f6f7;         
 }
 
 .field-label {
